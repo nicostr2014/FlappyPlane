@@ -196,7 +196,7 @@ function getHitSize(){ return 26 * getPlayerScale(); }
 function reset(){
   player={x:110,y:H/2,vy:0,rot:0}; obstacles=[]; coinList=[]; particles=[]; trail=[]; score=0; coinsThisRun=0; evoLevel=1; obstacleCount=0;
   // === ZWOLNIONE - FINAL13: było speed 2.8 / gravity 0.32 / lift -6.2 ===
-  speed=2.2; gravity=0.14; lift=-4.2; gap=getGap(); spawnTimer=0; frame=0; isPaused=false; isCounting=false;
+  speed=2.2; gravity=0.08; lift=-3.0; gap=getGap(); spawnTimer=0; frame=0; isPaused=false; isCounting=false;
   graceTime=150; // 2,5 sekundy przerwy na starcie - samolot wisi, nie ginie
   hud.textContent='0'; over.style.display='none'; pauseOverlay.style.display='none'; countdownEl.style.display='none'; evoFill.style.width='0%'; evoLabel.textContent='EVO Lv.1 - zbierz 8 🪙 żeby ewoluować!'; evoHud.textContent='EVO Lv.1';
   clouds=[]; for(let i=0;i<6;i++) clouds.push({x:Math.random()*W, y:Math.random()*H*0.7, s:30+Math.random()*50, v:0.3+Math.random()*0.5});
@@ -238,8 +238,8 @@ function update(){
   // === PRZERWA NA START: 2,5s samolot wisi w miejscu, nie spada, nie ginie ===
   if(graceTime>0){ graceTime--; player.vy=0; player.y=H/2; player.rot=0; return; }
   // === WOLNA FIZYKA: było lift*0.18 i clamp +-8, teraz wolniej ===
-  if(isHolding) player.vy += lift*0.18;
-  player.vy+=gravity; player.vy=Math.max(-4.5,Math.min(3.5,player.vy)); player.y+=player.vy;
+  if(isHolding) player.vy += lift*0.12;
+player.vy+=gravity; player.vy=Math.max(-2.8,Math.min(2.0,player.vy)); player.y+=player.vy;
   player.rot=Math.max(-25,Math.min(25,player.vy*3));
   if(engineGain && soundOn) engineGain.gain.value = isHolding ? 0.06 : 0.03;
   trail.push({x:player.x-22, y:player.y, life:20, hue:(bgTime*110)%360});
