@@ -185,7 +185,7 @@ function renderSkins(){
   });
 }
 renderSkins(); save();
-let player, obstacles, coinList, particles, clouds, trail, city, score, coinsThisRun, speed, gravity, lift, gap, spawnTimer, gameState, frame, isHolding=false, evoLevel, obstacleCount, bgTime=0, isPaused=false, isCounting=false;
+let player, obstacles, coinList, particles, clouds, trail, city, score, coinsThisRun, speed, gravity, lift, gap, spawnTimer, gameState, frame, isHolding=false, evoLevel, obstacleCount, bgTime=0, isPaused=false, isCounting=false, graceTime=0;
 function getSkin(){ return SKINS.find(s=>s.id===currentSkin)||SKINS[0]; }
 function getEvoLevel(){ if(getSkin().evo) return Math.min(5, 1+Math.floor(coinsThisRun/8)); return 1; }
 // BALANS EVO: mniejszy wzrost samolotu + większa przerwa = nie hardcore
@@ -194,7 +194,7 @@ function getGap(){ return 200 + (getEvoLevel()-1)*20; } // Lv1 200, Lv5 280
 function getHitSize(){ return 26 * getPlayerScale(); }
 function reset(){
   player={x:110,y:H/2,vy:0,rot:0}; obstacles=[]; coinList=[]; particles=[]; trail=[]; score=0; coinsThisRun=0; evoLevel=1; obstacleCount=0;
-  speed=2.8; gravity=0.32; lift=-6.2; gap=getGap(); spawnTimer=0; frame=0; isPaused=false; isCounting=false;
+  speed=2.6; gravity=0.20; lift=-7.0; gap=getGap(); spawnTimer=0; frame=0; isPaused=false; isCounting=false;
   hud.textContent='0'; over.style.display='none'; pauseOverlay.style.display='none'; countdownEl.style.display='none'; evoFill.style.width='0%'; evoLabel.textContent='EVO Lv.1 - zbierz 8 🪙 żeby ewoluować!'; evoHud.textContent='EVO Lv.1';
   clouds=[]; for(let i=0;i<6;i++) clouds.push({x:Math.random()*W, y:Math.random()*H*0.7, s:30+Math.random()*50, v:0.3+Math.random()*0.5});
   city=[];
@@ -233,7 +233,7 @@ function update(){
   if(isPortraitPhone()) return;
   frame++; bgTime+=0.02;
   if(isHolding) player.vy += lift*0.18;
-  player.vy+=gravity; player.vy=Math.max(-8,Math.min(8,player.vy)); player.y+=player.vy;
+  player.vy+=gravity; player.vy=Math.max(-7,Math.min(5.5,player.vy)); player.y+=player.vy;
   player.rot=Math.max(-25,Math.min(25,player.vy*3));
   if(engineGain && soundOn) engineGain.gain.value = isHolding ? 0.06 : 0.03;
   trail.push({x:player.x-22, y:player.y, life:20, hue:(bgTime*110)%360});
@@ -265,8 +265,9 @@ function update(){
   }
   for(let i=particles.length-1;i>=0;i--){ let p=particles[i]; p.x+=p.vx; p.y+=p.vy; p.life--; if(p.life<=0) particles.splice(i,1); }
   for(let i=trail.length-1;i>=0;i--){ trail[i].life--; if(trail[i].life<=0) trail.splice(i,1); }
-  const hitEdge = getHitSize()/2*0.75;
-  if(player.y-hitEdge<5 || player.y+hitEdge>H-5) gameOver();
+  if(graceTime>0) graceTime--;
+const hitEdge = getHitSize()/2*0.75;
+if(graceTime<=0 && (player.y-hitEdge<5 || player.y+hitEdge>H-5)) gameOver();
 }
 function gameOver(){ if(gameState!=='play') return; gameState='over'; playCrash(); if(engineGain) engineGain.gain.value=0; gamesPlayed++; save(); document.getElementById('scoreFinal').textContent='Wynik: '+score+' | Rekord: '+best; document.getElementById('coinsFinal').textContent='🪙 W tym locie: '+coinsThisRun+' | Razem: '+coins; document.getElementById('evoFinal').textContent = getSkin().evo ? '🧬 Osiągnięty poziom EVO: Lv.'+evoLevel+'/5' : 'Wybierz skin EVO żeby ewoluować!'; over.style.display='flex'; }
 // PAUZA + ODLICZANIE
@@ -533,7 +534,7 @@ function draw(){
 }
 function loop(){ update(); draw(); requestAnimationFrame(loop); }
 reset(); loop();
-function start(){ if(isPortraitPhone()) return; initAudio(); if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); reset(); menu.style.display='none'; gameState='play'; if(engineGain && soundOn) engineGain.gain.value=0.03; }
+function start(){ if(isPortraitPhone()) return; initAudio(); if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); reset(); graceTime = 90; menu.style.display='none'; gameState='play'; if(engineGain && soundOn) engineGain.gain.value=0.03; }
 document.getElementById('btn').onclick=start;
 document.getElementById('btn2').onclick=()=>{ initAudio(); if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); reset(); gameState='play'; if(engineGain && soundOn) engineGain.gain.value=0.03; };
 document.getElementById('btnShop').onclick=()=>{ over.style.display='none'; menu.style.display='flex'; gameState='menu'; renderSkins(); if(engineGain) engineGain.gain.value=0; };
