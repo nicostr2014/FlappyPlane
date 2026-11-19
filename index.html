@@ -196,7 +196,7 @@ function getHitSize(){ return 26 * getPlayerScale(); }
 function reset(){
   player={x:110,y:H/2,vy:0,rot:0}; obstacles=[]; coinList=[]; particles=[]; trail=[]; score=0; coinsThisRun=0; evoLevel=1; obstacleCount=0;
   // === ZWOLNIONE - FINAL13: było speed 2.8 / gravity 0.32 / lift -6.2 ===
-  speed=2.8; gravity=0.14; lift=-4.2; gap=getGap(); spawnTimer=0; frame=0; isPaused=false; isCounting=false;
+  speed=2.2; gravity=0.14; lift=-4.2; gap=getGap(); spawnTimer=0; frame=0; isPaused=false; isCounting=false;
   graceTime=150; // 2,5 sekundy przerwy na starcie - samolot wisi, nie ginie
   hud.textContent='0'; over.style.display='none'; pauseOverlay.style.display='none'; countdownEl.style.display='none'; evoFill.style.width='0%'; evoLabel.textContent='EVO Lv.1 - zbierz 8 🪙 żeby ewoluować!'; evoHud.textContent='EVO Lv.1';
   clouds=[]; for(let i=0;i<6;i++) clouds.push({x:Math.random()*W, y:Math.random()*H*0.7, s:30+Math.random()*50, v:0.3+Math.random()*0.5});
@@ -244,7 +244,7 @@ function update(){
   if(engineGain && soundOn) engineGain.gain.value = isHolding ? 0.06 : 0.03;
   trail.push({x:player.x-22, y:player.y, life:20, hue:(bgTime*110)%360});
   if(trail.length>22) trail.shift();
-  if(frame%400===0 && speed<4.4) speed+=0.15;
+  if(frame%400===0 && speed<3.2) speed+=0.10;
   spawnTimer++; if(spawnTimer>145){ spawnObstacle(); spawnTimer=0; }
   clouds.forEach(c=>{ c.x-=c.v; if(c.x<-80){ c.x=W+40; c.y=Math.random()*H*0.6; }});
   city.forEach(b=>{ b.x -= b.layer===0 ? 0.6 : 1.1; if(b.x+b.w<0){ b.x=W+10; b.h=60+Math.random()*90; b.seed=Math.random()*100; }});
