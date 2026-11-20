@@ -46,6 +46,22 @@
   #gameover h2{font-size:30px;color:#ff3b3b;text-shadow:3px 3px 0 #000}
   .small{font-size:11px!important;opacity:.8}
   #controlsHint{position:absolute;bottom:4px;left:0;right:0;text-align:center;color:rgba(255,255,255,.6);font-size:10px;pointer-events:none;z-index:5}
+ /* FIX: Duży START na telefonie - dla Szymka */
+@media (max-width:600px){
+  #menu{ justify-content:flex-start; padding-top:10px; }
+  #menu h1{ font-size:26px !important; }
+  #btn{
+    font-size:26px !important;
+    padding:18px 40px !important;
+    width:92% !important;
+    max-width:340px;
+    margin:14px 0 10px 0 !important;
+    box-shadow:0 8px 0 #000, 0 0 25px rgba(255,230,0,.7) !important;
+    position:sticky;
+    top:0;
+    z-index:20;
+  }
+}
 </style>
 </head>
 <body>
